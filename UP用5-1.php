@@ -11,7 +11,7 @@ $dsn = 'データベース名';
 $user = 'ユーザー名';
 $password = 'パスワード';
 $pdo = new PDO($dsn, $user, $password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING));
-//データ入力(3-1+(3-4)+4-5)
+//データ入力
 if(empty($_POST["name"])==false&&empty($_POST["comment"])==false&&empty($_POST["number"])==true){
 	$sql = $pdo -> prepare("INSERT INTO board (name, comment,pass) VALUES (:name, :comment, :pass)");
 	$sql -> bindParam(':name', $name, PDO::PARAM_STR);
@@ -22,13 +22,13 @@ if(empty($_POST["name"])==false&&empty($_POST["comment"])==false&&empty($_POST["
 	$pass = $_POST["pass"];
 	$sql -> execute();
 }
-//編集選択(3-4-1)
+//編集選択
 if(!empty($_POST["edit"])){
     $id=$_POST["edit"];
  	$sql = 'SELECT * FROM board where id=:id';
- 	$stmt = $pdo->prepare($sql);                  // ←差し替えるパラメータを含めて記述したSQLを準備し、
- 	$stmt->bindParam(':id', $id, PDO::PARAM_INT); // ←その差し替えるパラメータの値を指定してから、
-    $stmt->execute();                             // ←SQLを実行する。
+ 	$stmt = $pdo->prepare($sql);                 
+ 	$stmt->bindParam(':id', $id, PDO::PARAM_INT); 
+    $stmt->execute();                          
 	$results = $stmt->fetchAll();
 	foreach ($results as $row){
 		if($row['pass']==$_POST["passe"]){
@@ -39,7 +39,7 @@ if(!empty($_POST["edit"])){
 		}
 	}
 }
-//編集(3-4+4-7)
+//編集
 if(empty($_POST["name"])==false&&empty($_POST["comment"])==false&&empty($_POST["number"])==false){
 	$id = $_POST["number"]; 
 	$name = $_POST["name"];
@@ -72,13 +72,13 @@ if(empty($_POST["name"])==false&&empty($_POST["comment"])==false&&empty($_POST["
         <input type="submit" name="submit" value="編集"><br><br>
 </form>   
 <?php
-//削除(4-8)
+//削除
 if(!empty($_POST["delete"])){
 	$id = $_POST["delete"];
 	$sql = 'SELECT * FROM board where id=:id';
-	$stmt = $pdo->prepare($sql);                  // ←差し替えるパラメータを含めて記述したSQLを準備し、
- 	$stmt->bindParam(':id', $id, PDO::PARAM_INT); // ←その差し替えるパラメータの値を指定してから、
-    $stmt->execute();                             // ←SQLを実行する。
+	$stmt = $pdo->prepare($sql);                  
+ 	$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+    $stmt->execute();                             
 	$results = $stmt->fetchAll();
 	foreach ($results as $row){
 	if($row['pass']==$_POST["passd"]){
@@ -89,12 +89,11 @@ if(!empty($_POST["delete"])){
     	}
 }
 }
-//データ表示(4-6)	
+//データ表示
 	$sql = 'SELECT * FROM board';
 	$stmt = $pdo->query($sql);
 	$results = $stmt->fetchAll();
 	foreach ($results as $row){
-		//$rowの中にはテーブルのカラム名が入る
 		echo $row['id'].',';
 		echo $row['name'].',';
 		echo $row['comment'].'<br>';
